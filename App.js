@@ -1,13 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Intro from './app/screens/Intro';
+import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NoteScreen from './app/screens/NoteScreen';
+
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  const findUser = async () => {
+    const result = await AsyncStorage.getItem('user')
+    
+  }
+  
+  
+  useEffect(() => {
+  findUser()
+  },[])
+  return <Intro/>
 }
 
 const styles = StyleSheet.create({
