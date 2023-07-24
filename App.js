@@ -1,14 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Intro from './app/screens/Intro';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoteScreen from './app/screens/NoteScreen';
 
 
 export default function App() {
+  const [user, setUser] = useState({})
   const findUser = async () => {
     const result = await AsyncStorage.getItem('user')
+    if(result !== null){
+      setUser(JSON.parse(result))
+    }
     
   }
   
@@ -16,7 +20,9 @@ export default function App() {
   useEffect(() => {
   findUser()
   },[])
-  return <Intro/>
+
+  if(!user.name) return <Intro onFinish={findUser}/>
+  return <NoteScreen user={user} />
 }
 
 const styles = StyleSheet.create({
