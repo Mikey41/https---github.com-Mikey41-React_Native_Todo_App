@@ -10,7 +10,7 @@ import Note from '../components/Note';
 
 
 // create a component
-const NoteScreen = ({user}) => {
+const NoteScreen = ({user, navigation}) => {
   const [greet, setGreet] = useState('');
   const [modalVisible, setModalVisible] = useState(false)
   const [notes, setNotes] = useState([])
@@ -40,6 +40,9 @@ const NoteScreen = ({user}) => {
     await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes))
   }
 
+  const openNote = (note) => {
+    navigation.navigate('NoteDetail', {note})
+  }
 
   return (
     <>
@@ -55,7 +58,7 @@ const NoteScreen = ({user}) => {
         numColumns={2}
         columnWrapperStyle={{justifyContent:'space-between', marginBottom: 15,}}
         keyExtractor={item => item.id.toString()
-        } renderItem={({item}) => <Note item={item}/> } />
+        } renderItem={({item}) => <Note onPress={() => openNote(item)} item={item}/> } />
 
         {!notes.length ? (<View  style={[StyleSheet.absoluteFillObject,styles.emptyHeaderContainer]}>
           <Text style={styles.emptyHeader}>Add Notes</Text>

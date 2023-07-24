@@ -1,17 +1,19 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import colors from '../misc/colors';
 
 // create a component
-const Note = ({item}) => {
+const Note = ({item, onPress}) => {
   const{ title, description} = item;
   
   return (
-    <View style={styles.container}>
+    
+    <TouchableOpacity onPress={onPress} style={styles.container}>
       <Text style={styles.title} numberOfLines={2}>{title}</Text>
       <Text style={styles.description} numberOfLines={3}>{description}</Text>
-    </View>
+    </TouchableOpacity>
+    
   );
 };
 
