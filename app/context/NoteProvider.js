@@ -17,15 +17,6 @@ const NoteProvider = ({children}) => {
     findNotes();
   }, [])
   
-  const clearNotes = async () => {
-    try {
-      await AsyncStorage.removeItem('notes');
-      setNotes([]);
-      console.log('AsyncStorage cleared successfully.');
-    } catch (error) {
-      console.log('Error clearing AsyncStorage:', error);
-    }
-  };
   return (
     <NoteContext.Provider value={{notes, setNotes,findNotes}}>
       {children}
