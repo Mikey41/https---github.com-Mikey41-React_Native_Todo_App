@@ -7,13 +7,15 @@ import RoundIconBtn from '../components/RoundIconBtn';
 import NodeInputModel from '../components/NodeInputModel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Note from '../components/Note';
+import { useNotes } from '../context/NoteProvider';
+
 
 
 // create a component
 const NoteScreen = ({user, navigation}) => {
   const [greet, setGreet] = useState('');
   const [modalVisible, setModalVisible] = useState(false)
-  const [notes, setNotes] = useState([])
+  const {notes, setNotes} = useNotes()
   
   const findGreet = () => {
     const hrs = new Date().getHours();
@@ -22,14 +24,8 @@ const NoteScreen = ({user, navigation}) => {
     setGreet('Evening')
   }
 
-  const findNotes = async () => {
-    const result = await AsyncStorage.getItem('notes')
-    if(result !== null) setNotes(JSON.parse(result))
-  }
 
   useEffect (() => {
-    
-    findNotes();
     findGreet();
   }, [])
 
@@ -89,7 +85,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal:20,
     flex:1,
-    
+    zIndex: 1,
   },
   emptyHeader:{
     fontSize: 30,
@@ -107,8 +103,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 15,
     bottom: 50,
+    zIndex: 1,
   },
 });
 
 //make this component available to the app
+
+
 export default NoteScreen;
