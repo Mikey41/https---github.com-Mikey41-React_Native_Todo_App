@@ -5,6 +5,7 @@ import { useHeaderHeight } from '@react-navigation/elements';
 import colors from '../misc/colors';
 import RoundIconBtn from '../components/RoundIconBtn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NodeInputModel from '../components/NodeInputModel';
 import { useNotes } from '../context/NoteProvider';
 // create a component
 const formatDate = ms => {
@@ -20,9 +21,11 @@ const formatDate = ms => {
 }
 
 const NoteDetail = (props) => { 
-  const {note} = props.route.params;
+  const [note, setNote] = useState(props.route.params.note);
   const headerHeight = useHeaderHeight();
-  const {setNotes} = useNotes()
+  const {setNotes} = useNotes();
+  const [showModal, setShowModal] = useState(false);
+  const [isEdit,setIsEdit] = useState(false)
     
 
   const deleteNote = async () =>{
@@ -57,11 +60,42 @@ const NoteDetail = (props) => {
     );
   };
   
+  const handleUpdate = async (title, description, time) => {
+    const result = await AsyncStorage.getItem('notes')
+    let notes = [];
+    if(result !== null) notes = JSON.parse(result)
+
+    const newNotes = notes.filter(n => {
+      if(n.id === note.id){
+        n.title = title
+        n.description = description
+        n.isUpdated=true
+        n.time = time
+
+        setNote(n)
+      } 
+      return n;
+    })
+
+  setNotes(newNotes);
+  await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+  
+  };
+  const handleOnClose = () => setShowModal(false);
+
+  const openEditModal = () => {
+    setIsEdit(true)
+    setShowModal(true)
+  }
+
   return (
     <>
     
     <ScrollView contentContainerStyle={[styles.container, {paddingTop: headerHeight}]}>
-      <Text style={styles.time}>{ `Created At ${formatDate(note.time)}` }</Text>
+      <Text style={styles.time}>
+        { note.isUpdated
+      ? `Updated At ${formatDate(note.time)}` 
+      : `Created At ${formatDate(note.time)}` }</Text>
       <Text style={styles.title}>{note.title}</Text>
       <Text style={styles.description}>{note.description}</Text>
       
@@ -74,9 +108,15 @@ const NoteDetail = (props) => {
     onPress={displayDeleteAlert}
     />
     <RoundIconBtn antIconName= 'edit'
-    onPress={() => console.log('editing the note')}
+    onPress={openEditModal}
     />
     </View>
+    <NodeInputModel  
+    isEdit={isEdit}
+    note={note}
+    onClose={handleOnClose} 
+    onSubmit={handleUpdate} 
+    visible={showModal}  />
     </>
   );
 };

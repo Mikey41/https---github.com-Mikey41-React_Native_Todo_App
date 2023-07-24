@@ -1,18 +1,25 @@
-//import liraries
-import React, { Component, useState } from 'react';
+//import libraries
+import React, { Component, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Modal, StatusBar, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import colors from '../misc/colors';
 import RoundIconBtn from './RoundIconBtn';
 
 // create a component
-const NodeInputModel = ({visible, onClose, onSubmit}) => {
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+const NodeInputModel = ({visible, onClose, onSubmit, note, isEdit}) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   
   const handleModalClose = () =>{
     Keyboard.dismiss()
   }
   
+  useEffect(() => {
+    if (isEdit){
+      setTitle(note.title)  
+      setDescription(note.description)
+    }
+  },[isEdit])
+
   const handleOnChangeText = (text, valueFor) => {
     if (valueFor === 'title') setTitle(text);
     if (valueFor === 'description') setDescription(text);
@@ -20,15 +27,23 @@ const NodeInputModel = ({visible, onClose, onSubmit}) => {
   
   const handleSubmit = () =>{
     if(!title.trim() && !description.trim()) return onClose()
-    onSubmit(title,description);
-    setTitle('');
-    setDescription('');
+    if(isEdit){
+      onSubmit(title, description, Date.now());
+    }else{
+      onSubmit(title,description);
+      setTitle('');
+      setDescription('');
+    }
+
     onClose();
   };
 
   const closeModal = () =>{
-    setTitle('');
+    if(!isEdit){
+      setTitle('');
     setDescription('');
+    }
+    
     onClose();
   }
 

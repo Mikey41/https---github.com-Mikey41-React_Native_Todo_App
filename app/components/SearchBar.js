@@ -2,15 +2,28 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, StatusBar } from 'react-native';
 import colors from '../misc/colors';
-
+import{AntDesign} from '@expo/vector-icons'
 
 // create a component
-const SearchBar = ({containerStyle}) => {
+const SearchBar = ({containerStyle, value, onClear , onChangeText}) => {
   return (
     <>
     <StatusBar barStyle='dark-content' backgroundColor={colors.LIGHT} />
     <View style={[styles.container, {...containerStyle}]}>
-      <TextInput style={ styles.searchBar } placeholder='Search Here' />
+      <TextInput 
+      value={value} 
+      onChangeText={onChangeText} 
+      
+      style={ styles.searchBar } 
+      placeholder='Search ...' />
+      
+      {value ? <AntDesign 
+      name='close' 
+      size={20} 
+      color={colors.PRIMARY} 
+      onPress={onClear} 
+      style={styles.clearIcon}
+      /> : null}
     </View>
     </>
   );
@@ -27,8 +40,12 @@ const styles = StyleSheet.create({
     fontSize:20,
   },
   container: {
-    paddingHorizontal: 20,
-
+    justifyContent: 'center'
+  },
+  clearIcon:{
+    position: 'absolute',
+    right: 10,
+    
   },
 });
 
